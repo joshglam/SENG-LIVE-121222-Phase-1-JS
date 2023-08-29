@@ -159,6 +159,7 @@ window.addEventListener('keydown', (e) => {
 // we can use a book as an argument for renderBook!  This will add the book's info to the webpage.
 bookForm.addEventListener('submit', (e) => { 
   e.preventDefault();
+  console.log(e)
   // pull the info for the new book out of the form
   const book = {
     title: e.target.title.value,
@@ -171,6 +172,15 @@ bookForm.addEventListener('submit', (e) => {
   // pass the info as an argument to renderBook for display!
   renderBook(book);
   // 1. Add the ability to perist the book to the database when the form is submitted. When this works, we should still see the book that is added to the DOM on submission when we refresh the page.
+fetch("http://localhost:3000/books", {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(book)
+})
+.then(resp => resp.json())
+.then(data => console.log(data))
 
   e.target.reset();
 })
@@ -193,8 +203,11 @@ getJSON('http://localhost:3000/stores')
   });
 
 // load all the books and render them
-getJSON("http://localhost:3000/books")
-  .then((books) => {
-    books.forEach(book => renderBook(book))
-  })
-  .catch(renderError);
+// getJSON("http://localhost:3000/books")
+//   .then((books) => {
+//     books.forEach(book => renderBook(book))
+//   })
+//   .catch(renderError);
+fetch("http://localhost:3000/books")
+.then(res => res.json())
+.then(data => data.forEach(book => renderBook(book)))
